@@ -7,6 +7,7 @@ app = Flask(__name__)
 
 # This "/home/ec2-user/dbserver.endpoint" file has to be created from cloudformation template and it has RDS endpoint
 db_endpoint = open("/home/ec2-user/dbserver.endpoint", 'r', encoding='UTF-8') 
+public_ip = open("/home/ec2-user/public.ip", 'r', encoding='UTF-8') 
 
 # Configure mysql database
 
@@ -113,9 +114,10 @@ def delete_person(name):
 @app.route('/', methods=['GET', 'POST'])
 def find_records():
     if request.method == 'POST':
+        public_ip=public_ip.readline().strip()
         keyword = request.form['username']
         persons_app = find_persons(keyword) 
-        return render_template('index.html', persons_html=persons_app, keyword=keyword, show_result=True, developer_name='Serdar')
+        return render_template('index.html', persons_html=persons_app, keyword=keyword, show_result=True, developer_name='Serdar',public_ip=public_ip)
     else:
         return render_template('index.html', show_result=False, developer_name='Serdar')
 
